@@ -14,11 +14,9 @@ struct CameraView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
         
-        // Capture session setup
         let captureSession = AVCaptureSession()
         captureSession.sessionPreset = .high
         
-        // Camera authorization
         func setupCamera() {
             guard let captureDevice = AVCaptureDevice.default(
                 .builtInWideAngleCamera,
@@ -59,7 +57,6 @@ struct CameraView: UIViewControllerRepresentable {
             }
         }
         
-        // Handle permissions
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setupCamera()
