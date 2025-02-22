@@ -49,6 +49,10 @@ struct HistoryView: View {
                 }
             }
             .navigationTitle("Scan History")
+            .onAppear {
+                print("HistoryView appeared")
+                print("Saved Products Count: \(dataManager.savedProducts.count)")
+            }
             .alert("Error", isPresented: .constant(error != nil)) {
                 Button("OK") {
                     error = nil
