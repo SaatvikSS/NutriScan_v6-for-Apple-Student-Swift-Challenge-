@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var showOnboarding = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -18,11 +20,19 @@ struct ContentView: View {
                 }
                 .tag(1)
             
-            SettingsView(isDarkMode: $isDarkMode)
+            SettingsView(isDarkMode: $isDarkMode, showOnboarding: $showOnboarding)
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
                 .tag(2)
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView()
+        }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showOnboarding = true
+            }
         }
         .accentColor(Color("PrimaryGreen"))
         .preferredColorScheme(isDarkMode ? .dark : .light)
@@ -96,8 +106,7 @@ struct ProductRow: View {
 
 struct SettingsView: View {
     @Binding var isDarkMode: Bool
-    @State private var isGlutenFree = false
-    @State private var isVegan = false
+    @Binding var showOnboarding: Bool
     
     var body: some View {
         NavigationView {
@@ -106,18 +115,15 @@ struct SettingsView: View {
                     Toggle("Dark Mode", isOn: $isDarkMode)
                 }
                 
-                Section(header: Text("Dietary Preferences")) {
-                    Toggle("Gluten Free", isOn: $isGlutenFree)
-                    Toggle("Vegan", isOn: $isVegan)
+                Section(header: Text("Help")) {
+                    Button("View Walkthrough") {
+                        showOnboarding = true
+                    }
                 }
                 
                 Section(header: Text("About")) {
-                    HStack {
-                        Text("Version")
-                        Spacer()
-                        Text("1.0.0")
-                            .foregroundColor(.gray)
-                    }
+                    Text("NutriScan v1.0")
+                    Text(" 2025 All rights reserved")
                 }
             }
             .navigationTitle("Settings")
